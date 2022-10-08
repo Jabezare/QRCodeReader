@@ -1,2 +1,2 @@
 # QRCodeReader
-Application that reads QR codes from images utilizing machine vision. 
+Application that reads QR and barcodes from images and video utilizing machine vision. 
