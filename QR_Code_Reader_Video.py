@@ -3,8 +3,6 @@ from pyzbar.pyzbar import decode
 import time
 
 capture = cv2.VideoCapture(0)
-capture.set(3, 640)
-capture.set(4, 480)
 
 used_codes = []
 
@@ -14,16 +12,14 @@ while camera == True:
 
     for code in decode(frame):
         if code.data.decode('utf-8') not in used_codes:
-            print('Approved')
             print(code.type)
             print(code.data.decode('utf-8'))
             used_codes.append(code.data.decode('utf-8'))
-            time.sleep(5)
-        elif code.data.decode('utf-8') in used_codes:
-            print('Disapproved')
-            time.sleep(5)
+            time.sleep(1)
         else:
             pass
 
-    cv2.imshow('Testing-code-scan', frame)
-    cv2.waitKey(27)
+    frame = cv2.resize(frame, None, fx = 0.5, fy = 0.5)
+    cv2.imshow('Video input', frame)
+    if cv2.waitKey(1) & 0xFF == ord('q'):
+        camera = False
