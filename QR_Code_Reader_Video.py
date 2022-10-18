@@ -1,6 +1,6 @@
 import cv2
+import numpy as np
 from pyzbar.pyzbar import decode
-import time
 
 capture = cv2.VideoCapture(0)
 
@@ -11,11 +11,22 @@ while camera == True:
     success, frame = capture.read()
 
     for code in decode(frame):
-        if code.data.decode('utf-8') not in used_codes:
-            print(code.type)
-            print(code.data.decode('utf-8'))
+        points = code.polygon
+        (x,y,w,h) = code.rect
+        pts = np.array(points, np.int32)
+        pts = pts.reshape((-1, 1, 2))
+        cv2.polylines(frame, [pts], True, (255, 0, 0), 3)
+
+        codeData = code.data.decode("utf-8")
+        codeType = code.type
+        floatingText = "Type: " + str(codeType) + " | Data: " + str(codeData)
+        
+        cv2.putText(frame, floatingText, (x,y - 20), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (255,255,255), 2)
+        
+        if codeData not in used_codes:
+            print("New Code!")
+            print("Type: "+codeType +" | Data: "+codeData)
             used_codes.append(code.data.decode('utf-8'))
-            time.sleep(1)
         else:
             pass
 
